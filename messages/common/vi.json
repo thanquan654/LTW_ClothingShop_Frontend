@@ -101,7 +101,8 @@
 		"delivery_method": "Phương thức giao hàng",
 		"total": "Tổng số tiền",
 		"your_order_received": "Đơn hàng của bạn đã được nhận.",
-		"thank_you_for_purchasing": "Cảm ơn bạn đã mua hàng của chúng tôi."
+		"thank_you_for_purchasing": "Cảm ơn bạn đã mua hàng của chúng tôi.",
+		"send_order_email": "Gửi chi tiết sản phẩm vào email"
 	},
 	"Others": {
 		"page_not_found": "Oops! Trang không tồn tại!",
@@ -123,5 +124,11 @@
 		"shop_now": "Mua ngay",
 		"our_shop": "Cửa hàng của chúng tôi",
 		"our_shop_desc": "Ghé cửa hàng để tìm hiểu câu chuyện đằng sau sản phẩm, tư vấn phong cách cá nhân hoặc mua sắm trực tiếp."
+	},
+	"Search": {
+		"home": "Trang chủ",
+		"search_results": "Kết quả tìm kiếm",
+		"no_result": "Không có kết quả",
+		"showing_results": "Hiển thị {products} kết quả"
 	}
 }

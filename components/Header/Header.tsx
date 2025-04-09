@@ -6,10 +6,10 @@ import { useTranslations } from 'next-intl'
 import TopNav from './TopNav'
 import WhistlistIcon from '../../public/icons/WhistlistIcon'
 import UserIcon from '../../public/icons/UserIcon'
-// import AuthForm from "../Auth/AuthForm";
-// import SearchForm from "../SearchForm/SearchForm";
-// import CartItem from "../CartItem/CartItem";
-// import Menu from "../Menu/Menu";
+import AuthForm from '../Auth/AuthForm'
+import SearchForm from '../SearchForm/SearchForm'
+import CartItem from '../CartItem/CartItem'
+import Menu from '../Menu/Menu'
 import AppHeader from './AppHeader'
 // import { useWishlist } from "../../context/wishlist/WishlistProvider";
 
@@ -88,7 +88,7 @@ const Header: React.FC<Props> = ({ title }) => {
 			>
 				<div className="app-max-width w-full">
 					<div
-						className={`flex justify-between align-baseline app-x-padding ${styles.mainMenu}`}
+						className={`flex justify-between align-baseline app-x-padding py-6`}
 					>
 						{/* Hamburger Menu and Mobile Nav */}
 						<div className="flex-1 lg:flex-0 lg:hidden">
@@ -96,28 +96,24 @@ const Header: React.FC<Props> = ({ title }) => {
 						</div>
 
 						{/* Left Nav */}
-						<ul
-							className={`flex-0 lg:flex-1 flex ${styles.leftMenu}`}
-						>
-							<li>
+						<ul className={`flex-0 lg:flex-1 flex`}>
+							<li className="mr-12 hidden lg:block whitespace-nowrap hover:text-gray-400">
 								<Link href={`/product-category/men`}>
-									<a>{t('men')}</a>
+									{t('men')}
 								</Link>
 							</li>
-							<li>
+							<li className="mr-12 hidden lg:block whitespace-nowrap hover:text-gray-400">
 								<Link href={`/product-category/women`}>
-									<a>{t('women')}</a>
+									{t('women')}
 								</Link>
 							</li>
-							<li>
+							<li className="mr-12 hidden lg:block whitespace-nowrap hover:text-gray-400">
 								<Link href="/product-category/bags">
-									<a>{t('bags')}</a>
+									{t('bags')}
 								</Link>
 							</li>
-							<li>
-								<Link href="/coming-soon">
-									<a>{t('blogs')}</a>
-								</Link>
+							<li className="mr-12 hidden lg:block whitespace-nowrap hover:text-gray-400 mr-0">
+								<Link href="/coming-soon">{t('blogs')}</Link>
 							</li>
 						</ul>
 
@@ -125,33 +121,29 @@ const Header: React.FC<Props> = ({ title }) => {
 						<div className="flex-1 flex justify-center items-center cursor-pointer">
 							<div className="w-32 h-auto">
 								<Link href="/">
-									<a>
-										<Image
-											className="justify-center"
-											src="/logo.svg"
-											alt="Picture of the author"
-											width={220}
-											height={50}
-											layout="responsive"
-										/>
-									</a>
+									<Image
+										className="justify-center"
+										src="/logo.svg"
+										alt="Picture of the author"
+										width={220}
+										height={50}
+										layout="responsive"
+									/>
 								</Link>
 							</div>
 						</div>
 
 						{/* Right Nav */}
-						<ul
-							className={`flex-1 flex justify-end ${styles.rightMenu}`}
-						>
-							<li>
+						<ul className={`flex-1 flex justify-end`}>
+							<li className="ml-12 hidden lg:block">
 								<SearchForm />
 							</li>
-							<li>
+							<li className="ml-12 hidden lg:block">
 								<AuthForm>
 									<UserIcon />
 								</AuthForm>
 							</li>
-							<li>
+							<li className="ml-12 hidden sm:block">
 								<Link href="/wishlist" passHref>
 									{/* <a className="relative" aria-label="Wishlist"> */}
 									<button
@@ -171,7 +163,7 @@ const Header: React.FC<Props> = ({ title }) => {
 									{/* </a> */}
 								</Link>
 							</li>
-							<li>
+							<li className="ml-12">
 								<CartItem />
 							</li>
 						</ul>
