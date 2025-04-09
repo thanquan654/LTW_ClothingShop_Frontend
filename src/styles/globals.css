@@ -33,4 +33,20 @@ body {
 		margin-right: auto;
 		max-width: 80rem;
 	}
+
+	.app-x-padding {
+		@apply px-4; /* Default: 1rem (16px) */
+	}
+
+	@media (min-width: 576px) {
+		.app-x-padding {
+			@apply px-8; /* 2rem (32px) */
+		}
+	}
+
+	@media (min-width: 768px) {
+		.app-x-padding {
+			@apply px-12; /* 3rem (48px) */
+		}
+	}
 }

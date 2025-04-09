@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
 		defaultLocale: 'en',
 	},
 	reactStrictMode: true,
+	images: {
+		domains: ['res.cloudinary.com'],
+	},
 }
 
 export default nextConfig
