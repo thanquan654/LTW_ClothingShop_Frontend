@@ -11,9 +11,6 @@ import SearchForm from '../SearchForm/SearchForm'
 import CartItem from '../CartItem/CartItem'
 import Menu from '../Menu/Menu'
 import AppHeader from './AppHeader'
-// import { useWishlist } from "../../context/wishlist/WishlistProvider";
-
-import styles from './Header.module.css'
 
 type Props = {
 	title?: string
@@ -21,28 +18,8 @@ type Props = {
 
 const Header: React.FC<Props> = ({ title }) => {
 	const t = useTranslations('Navigation')
-	//   const { wishlist } = useWishlist();
-	const [animate, setAnimate] = useState('')
 	const [scrolled, setScrolled] = useState<boolean>(false)
 	const [didMount, setDidMount] = useState<boolean>(false) // to disable Can't perform a React state Warning
-
-	// Calculate Number of Wishlist
-	//   let noOfWishlist = wishlist.length;
-	let noOfWishlist = 0
-
-	// Animate Wishlist Number
-	const handleAnimate = useCallback(() => {
-		if (noOfWishlist === 0) return
-		setAnimate('animate__animated animate__headShake')
-	}, [noOfWishlist, setAnimate])
-
-	// Set animate when no of wishlist changes
-	useEffect(() => {
-		handleAnimate()
-		setTimeout(() => {
-			setAnimate('')
-		}, 1000)
-	}, [handleAnimate])
 
 	const handleScroll = useCallback(() => {
 		const offset = window.scrollY
@@ -112,7 +89,7 @@ const Header: React.FC<Props> = ({ title }) => {
 									{t('bags')}
 								</Link>
 							</li>
-							<li className="mr-12 hidden lg:block whitespace-nowrap hover:text-gray-400 mr-0">
+							<li className=" hidden lg:block whitespace-nowrap hover:text-gray-400 mr-0">
 								<Link href="/coming-soon">{t('blogs')}</Link>
 							</li>
 						</ul>
@@ -142,26 +119,6 @@ const Header: React.FC<Props> = ({ title }) => {
 								<AuthForm>
 									<UserIcon />
 								</AuthForm>
-							</li>
-							<li className="ml-12 hidden sm:block">
-								<Link href="/wishlist" passHref>
-									{/* <a className="relative" aria-label="Wishlist"> */}
-									<button
-										type="button"
-										className="relative"
-										aria-label="Wishlist"
-									>
-										<WhistlistIcon />
-										{noOfWishlist > 0 && (
-											<span
-												className={`${animate} absolute text-xs -top-3 -right-3 bg-gray500 text-gray100 py-1 px-2 rounded-full`}
-											>
-												{noOfWishlist}
-											</span>
-										)}
-									</button>
-									{/* </a> */}
-								</Link>
 							</li>
 							<li className="ml-12">
 								<CartItem />
