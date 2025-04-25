@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslations } from 'next-intl'
+import https from 'https'
 
 import SearchIcon from '../../public/icons/SearchIcon'
 import axios from 'axios'
@@ -35,24 +36,27 @@ export default function SearchForm() {
 	useEffect(() => {
 		if (!isFetching) return
 		const fetchData = async () => {
+			const agent = new https.Agent({ rejectUnauthorized: false })
 			const res = await axios.get(
-				`${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/products/search?q=${searchValue}`,
+				`https://localhost:7275/api/Product?Search=${encodeURIComponent(
+					searchValue,
+				)}&Page=1&PageSize=10&SortBy=id&SortDirection=asc`,
+				{ httpsAgent: agent },
 			)
-			const fetchedProducts: apiProductsType[] = res.data.data.map(
-				(product: apiProductsType) => ({
-					...product,
-					img1: product.image1,
-					img2: product.image2,
-				}),
-			)
-			if (fetchedProducts.length < 1) setNoResult(true)
-			fetchedProducts.map((product, index) => {
-				if (index < 4) {
-					setSearchItems((prevProduct) => [...prevProduct, product])
-				} else {
-					setMoreThanFour(true)
-				}
-			})
+			const fetchedProducts = res.data.data
+
+			console.log('🚀 ~ fetchedProducts:', fetchedProducts)
+
+			const items = fetchedProducts.map((product: any) => ({
+				id: product.id,
+				name: product.tenSanPham,
+				price: product.giaTien,
+				// img1: product.anhDaiDien,
+				img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+				saleCount: product.luotBan,
+			}))
+
+			setSearchItems(items)
 			setIsFetching(false)
 		}
 		fetchData()

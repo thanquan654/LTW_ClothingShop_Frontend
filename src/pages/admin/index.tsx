@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext' // Đảm bảo đúng đường dẫn
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AdminDashboard } from '@/components/admin-dashboard'
 import { StaffDashboard } from '@/components/staff-dashboard'
@@ -20,6 +21,15 @@ import type { UserRole } from '@/types/types'
 import { AdminSidebar } from '@/components/admin-sidebar'
 
 export default function DashboardPage() {
+	const { user } = useAuth()
+	const router = useRouter()
+
+	useEffect(() => {
+		if (user && user.role !== 'Admin') {
+			router.replace('/') // hoặc trang báo lỗi
+		}
+	}, [user, router])
+
 	// Normally this would come from an auth context or API
 	const [userRole, setUserRole] = useState<UserRole>('admin')
 	const pathname = usePathname()

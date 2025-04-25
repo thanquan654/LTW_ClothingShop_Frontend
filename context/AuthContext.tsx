@@ -38,9 +38,8 @@ type User = {
 	id: number
 	email: string
 	fullname: string
-	shippingAddress?: string
 	phone?: string
-	token: string
+	role: string
 }
 
 // Provider component that wraps your app and makes auth object ...
@@ -75,28 +74,27 @@ function useProvideAuth() {
 		email: string,
 		fullname: string,
 		password: string,
-		shippingAddress: string,
+		confirmPassword: string,
 		phone: string,
 	) => {
 		try {
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`,
+				`https://localhost:7275/api/Auth/register`,
 				{
-					email,
-					fullname,
-					password,
-					shippingAddress,
-					phone,
+					email: email,
+					hoVaTen: fullname,
+					matKhau: password,
+					xacNhanMatKhau: confirmPassword,
+					soDienThoai: phone,
 				},
 			)
-			const registerResponse = response.data
+			const registerResponse = response.data.data
 			const user: User = {
 				id: +registerResponse.id,
-				email,
-				fullname,
-				shippingAddress,
-				phone,
-				token: registerResponse.token,
+				email: registerResponse.email,
+				fullname: registerResponse.hoVaTen,
+				phone: registerResponse.soDienThoai,
+				role: registerResponse.vaiTro,
 			}
 			setUser(user)
 			return {
@@ -121,20 +119,22 @@ function useProvideAuth() {
 	const login = async (email: string, password: string) => {
 		try {
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
+				`https://localhost:7275/api/Auth/login`,
 				{
-					email,
-					password,
+					emailOrPhone: email,
+					matKhau: password,
 				},
 			)
-			const loginResponse = response.data
+			const loginResponse = response.data.data
+
+			console.log('🚀 ~ loginResponse:', loginResponse)
+
 			const user: User = {
-				id: +loginResponse.data.id,
+				id: loginResponse.user.id,
 				email,
-				fullname: loginResponse.data.fullname,
-				phone: loginResponse.data.phone,
-				shippingAddress: loginResponse.data.shippingAddress,
-				token: loginResponse.token,
+				fullname: loginResponse.user.hoVaTen,
+				phone: loginResponse.user.soDienThoai,
+				role: loginResponse.user.vaiTro,
 			}
 			setUser(user)
 			return {

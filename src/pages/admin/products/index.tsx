@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { UserNav } from '@/components/user-nav'
@@ -21,11 +21,39 @@ import { Button } from '@/components/ui/button'
 import { Filter, Plus, Download } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import type { UserRole } from '@/types/types'
+import Link from 'next/link'
 
 export default function ProductsPage() {
 	const [userRole, setUserRole] = useState<UserRole>('admin')
 	const [selectedProducts, setSelectedProducts] = useState<string[]>([])
 	const [filtersVisible, setFiltersVisible] = useState(true)
+	const [products, setProducts] = useState<any[]>([])
+	const [currentPage, setCurrentPage] = useState(1)
+	const [totalPages, setTotalPages] = useState(1)
+
+	useEffect(() => {
+		fetch(
+			`https://localhost:7275/api/Product?Page=${currentPage}&PageSize=10&SortBy=id&SortDirection=asc`,
+		)
+			.then((res) => res.json())
+			.then((data) => {
+				const mapped = data.data.map((item: any) => ({
+					id: item.id,
+					name: item.tenSanPham,
+					price: item.giaTien,
+					image: item.anhDaiDien
+						? `/uploads/${item.anhDaiDien}`
+						: '/placeholder.svg',
+					stock: item.luotBan,
+					category: '',
+					brand: '',
+					status: 'visible',
+					sku: '',
+				}))
+				setProducts(mapped)
+				setTotalPages(data.pagination?.totalPages || 1)
+			})
+	}, [currentPage])
 
 	const toggleRole = () => {
 		setUserRole(userRole === 'admin' ? 'staff' : 'admin')
@@ -121,10 +149,10 @@ export default function ProductsPage() {
 										: 'Hiện bộ lọc'}
 								</Button>
 								<Button asChild>
-									<a href="/admin/products/add">
+									<Link href="/admin/products/add">
 										<Plus className="mr-2 h-4 w-4" />
 										Thêm sản phẩm mới
-									</a>
+									</Link>
 								</Button>
 							</div>
 						</div>
@@ -166,6 +194,10 @@ export default function ProductsPage() {
 										setSelectedProducts={
 											setSelectedProducts
 										}
+										products={products}
+										currentPage={currentPage}
+										setCurrentPage={setCurrentPage}
+										totalPages={totalPages}
 									/>
 								</div>
 							</div>

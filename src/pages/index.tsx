@@ -3,6 +3,7 @@ import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import axios from 'axios'
+import https from 'https'
 
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -25,30 +26,40 @@ const Home: React.FC<Props> = ({ products }) => {
 	const t = useTranslations('Index')
 	const [currentItems, setCurrentItems] = useState(products)
 	const [isFetching, setIsFetching] = useState(false)
+	const [page, setPage] = useState(1)
 
 	useEffect(() => {
 		if (!isFetching) return
 		const fetchData = async () => {
+			const agent = new https.Agent({ rejectUnauthorized: false })
 			const res = await axios.get(
-				`${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/products?order_by=createdAt.desc&offset=${currentItems.length}&limit=10`,
+				`https://localhost:7275/api/Product?Page=1&PageSize=10&SortBy=id&SortDirection=asc`,
+				{ httpsAgent: agent },
 			)
-			const fetchedProducts = res.data.data.map(
-				(product: apiProductsType) => ({
-					...product,
-					img1: product.image1,
-					img2: product.image2,
-				}),
-			)
-			setCurrentItems((products) => [...products, ...fetchedProducts])
+			const fetchedProducts = res.data.data
+
+			console.log('🚀 ~ fetchedProducts:', fetchedProducts)
+
+			const productsData = fetchedProducts.map((product: any) => ({
+				id: product.id,
+				name: product.tenSanPham,
+				price: product.giaTien,
+				// img1: product.anhDaiDien,
+				img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+				saleCount: product.luotBan,
+			}))
+
+			setCurrentItems((products) => [...products, ...productsData])
 			setIsFetching(false)
 		}
 		fetchData()
-	}, [isFetching, currentItems.length])
+	}, [isFetching, page])
 
 	const handleSeemore = async (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => {
 		e.preventDefault()
+		setPage(page + 1)
 		setIsFetching(true)
 	}
 
@@ -119,9 +130,9 @@ const Home: React.FC<Props> = ({ products }) => {
 					</div>
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 lg:gap-x-12 gap-y-6 mb-10 app-x-padding">
 						<Card key={currentItems[1].id} item={currentItems[1]} />
-						<Card key={currentItems[2].id} item={currentItems[2]} />
+						{/* <Card key={currentItems[2].id} item={currentItems[2]} />
 						<Card key={currentItems[3].id} item={currentItems[3]} />
-						<Card key={currentItems[4].id} item={currentItems[4]} />
+						<Card key={currentItems[4].id} item={currentItems[4]} /> */}
 					</div>
 				</section>
 
@@ -149,7 +160,7 @@ const Home: React.FC<Props> = ({ products }) => {
 					</div>
 				</section>
 
-				<div className="border-gray100 border-b-2"></div>
+				<div className="border-gray-100 border-b-2"></div>
 
 				{/* ===== Our Shop Section */}
 				<section className="app-max-width mt-16 mb-20 flex flex-col justify-center items-center text-center">
@@ -170,102 +181,30 @@ const Home: React.FC<Props> = ({ products }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-	let products: itemType[] = []
-	// FIXME: Call API to get products
-	products = [
-		{
-			id: 100,
-			name: 'Tempsoft',
-			price: '33.56',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/125_zp8lpt.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/126_oyivlh.webp',
-		},
-		{
-			id: 99,
-			name: 'Overhold',
-			price: '123.91',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028883/haru/83_or2yx2.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028883/haru/84_xhul9w.webp',
-		},
-		{
-			id: 98,
-			name: 'Ronstring',
-			price: '134.08',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646024958/haru/11_x5vopz.jpg',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646024957/haru/12_fyz5hq.jpg',
-		},
-		{
-			id: 97,
-			name: 'Solarbreeze',
-			price: '124.16',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646039361/haru/151_gsi9dp.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646039361/haru/152_l7p79y.webp',
-		},
-		{
-			id: 96,
-			name: 'Voltsillam',
-			price: '123.99',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646039402/haru/153_szqtx3.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646039402/haru/154_gxsayj.webp',
-		},
-		{
-			id: 95,
-			name: 'Stringtough',
-			price: '141.38',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028602/haru/77_wz1few.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028602/haru/78_e1x1ae.webp',
-		},
-		{
-			id: 94,
-			name: 'Greenlam',
-			price: '61.94',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646026083/haru/35_q9xywd.jpg',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646026083/haru/36_agho06.jpg',
-		},
-		{
-			id: 93,
-			name: 'Namfix',
-			price: '150.91',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028517/haru/73_h5kdt8.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028517/haru/74_jtxobp.webp',
-		},
-		{
-			id: 92,
-			name: 'Domainer',
-			price: '178.12',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646038633/haru/133_iosxvx.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646038633/haru/134_psybg7.webp',
-		},
-		{
-			id: 91,
-			name: 'Cardguard',
-			price: '163.24',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/66_tmhgnk.webp',
-		},
-	]
-	// const res = await axios.get(
-	// 	`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?order_by=createdAt.desc&limit=10`,
-	// )
-	// const fetchedProducts = res.data
-	// fetchedProducts.data.forEach((product: apiProductsType) => {
-	// 	products = [
-	// 		...products,
-	// 		{
-	// 			id: product.id,
-	// 			name: product.name,
-	// 			price: product.price,
-	// 			img1: product.image1,
-	// 			img2: product.image2,
-	// 		},
-	// 	]
-	// })
+	const agent = new https.Agent({ rejectUnauthorized: false })
+	const res = await axios.get(
+		`https://localhost:7275/api/Product?Page=1&PageSize=10&SortBy=id&SortDirection=asc`,
+		{ httpsAgent: agent },
+	)
+	const fetchedProducts = res.data.data
+
+	console.log('🚀 ~ fetchedProducts:', fetchedProducts)
+
+	const products = fetchedProducts.map((product: any) => ({
+		id: product.id,
+		name: product.tenSanPham,
+		price: product.giaTien,
+		img1: product.anhDaiDien,
+		// img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+		saleCount: product.luotBan,
+	}))
+
 	return {
 		props: {
 			messages: (await import(`../../messages/common/${locale}.json`))
 				.default,
 			products,
-		}, // will be passed to the page component as props
+		},
 	}
 }
 

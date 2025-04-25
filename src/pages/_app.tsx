@@ -12,6 +12,8 @@ import 'nprogress/nprogress.css'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import { ProvideAuth } from '@/context/AuthContext'
+import { ProvideCart } from '@/context/cart/CartProvider'
 
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
@@ -31,7 +33,11 @@ export default function App({ Component, pageProps }: AppCustomProps) {
 			timeZone="Asia/Ho_Chi_Minh"
 			messages={pageProps?.messages}
 		>
-			<Component {...pageProps} />
+			<ProvideAuth>
+				<ProvideCart>
+					<Component {...pageProps} />
+				</ProvideCart>
+			</ProvideAuth>
 		</NextIntlClientProvider>
 	)
 }

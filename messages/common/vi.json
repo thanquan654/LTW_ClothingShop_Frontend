@@ -137,11 +137,13 @@
 		"availability": "Tình trạng",
 		"in_stock": "Còn hàng",
 		"size": "Kích cỡ",
+		"color": "Màu sắc",
 		"add_to_cart": "Thêm vào giỏ",
 		"add_to_wishlist": "Thêm vào yêu thích",
 		"details": "Chi tiết",
 		"share": "Chia sẻ",
-		"you_may_also_like": "Bạn có thể thích"
+		"you_may_also_like": "Bạn có thể thích",
+		"Áo thun": "Áo thun"
 	},
 	"LoginRegister": {
 		"login": "Đăng nhập",
@@ -154,6 +156,7 @@
 		"phone": "Số điện thoại",
 		"email_address": "Địa chỉ email",
 		"password": "Mật khẩu",
+		"confirm_password": "Xác nhận mật khẩu",
 		"remember_me": "Ghi nhớ đăng nhập?",
 		"forgot_password": "Quên mật khẩu?",
 		"not_member": "Chưa có tài khoản?",

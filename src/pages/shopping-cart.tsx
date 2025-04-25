@@ -113,7 +113,8 @@ const ShoppingCart = () => {
 													<span>{item.name}</span>
 												</td>
 												<td className="text-right text-gray400 hidden sm:table-cell">
-													$ {roundDecimal(item.price)}
+													{roundDecimal(item.price)}{' '}
+													VNĐ
 												</td>
 												<td>
 													<div className="w-12 h-32 sm:h-auto sm:w-3/4 md:w-2/6 mx-auto flex flex-col-reverse sm:flex-row border border-gray300 sm:divide-x-2 divide-gray300">
@@ -141,17 +142,17 @@ const ShoppingCart = () => {
 													</div>
 												</td>
 												<td className="text-right text-gray400">
-													${' '}
 													{roundDecimal(
 														item.price * item.qty!,
-													)}
+													)}{' '}
+													VNĐ
 													<br />
 													<span className="text-xs">
-														(${' '}
+														(
 														{roundDecimal(
 															item.price,
-														)}
-														)
+														)}{' '}
+														VNĐ)
 													</span>
 												</td>
 												<td
@@ -191,7 +192,7 @@ const ShoppingCart = () => {
 								<span className="uppercase">
 									{t('subtotal')}
 								</span>
-								<span>$ {roundDecimal(subtotal)}</span>
+								<span>{roundDecimal(subtotal)} VNĐ</span>
 							</div>
 							<div className="py-3">
 								<span className="uppercase">
@@ -239,7 +240,7 @@ const ShoppingCart = () => {
 												{t('within_yangon')}
 											</label>
 										</div>
-										<span>$ 2.00</span>
+										<span>23000 VNĐ</span>
 									</div>
 									<div className="flex justify-between">
 										<div>
@@ -260,15 +261,13 @@ const ShoppingCart = () => {
 												{t('other_cities')}
 											</label>
 										</div>
-										<span>$ 7.00</span>
+										<span>30000 VNĐ</span>
 									</div>
 								</div>
 							</div>
 							<div className="flex justify-between py-3">
 								<span>{t('grand_total')}</span>
-								<span>
-									$ {roundDecimal(subtotal + deliFee)}
-								</span>
+								<span>{roundDecimal(subtotal)} VNĐ</span>
 							</div>
 							<Button
 								value={t('proceed_to_checkout')}

@@ -144,11 +144,13 @@
 		"availability": "Availability",
 		"in_stock": "In Stock",
 		"size": "Size",
+		"color": "Color",
 		"add_to_cart": "Add To Cart",
 		"add_to_wishlist": "Add To Wishlist",
 		"details": "Details",
 		"share": "Share",
-		"you_may_also_like": "You may also like"
+		"you_may_also_like": "You may also like",
+		"Áo thun": "T-shirt"
 	},
 	"LoginRegister": {
 		"login": "Login",
@@ -161,6 +163,7 @@
 		"phone": "Phone",
 		"email_address": "Email Address",
 		"password": "Password",
+		"confirm_password": "Confirm Password",
 		"remember_me": "Remember me?",
 		"forgot_password": "Forgot your password?",
 		"not_member": "Not a member?",

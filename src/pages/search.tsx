@@ -3,6 +3,7 @@ import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import https from 'https'
 
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -80,22 +81,27 @@ export const getServerSideProps: GetServerSideProps = async ({
 	locale,
 	query: { q = '' },
 }) => {
-	// FIXME: Call API to get searched products
-	// const res = await axios.get(
-	// 	`${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/products/search?q=${q}`,
-	// )
-	// const fetchedProducts: apiProductsType[] = res.data.data.map(
-	// 	(product: apiProductsType) => ({
-	// 		...product,
-	// 		img1: product.image1,
-	// 		img2: product.image2,
-	// 	}),
-	// )
+	console.log('🚀 ~ query:', query)
 
-	let items: apiProductsType[] = []
-	// fetchedProducts.forEach((product: apiProductsType) => {
-	// 	items.push(product)
-	// })
+	const agent = new https.Agent({ rejectUnauthorized: false })
+	const res = await axios.get(
+		`https://localhost:7275/api/Product?Search=${encodeURIComponent(
+			q,
+		)}&Page=1&PageSize=10&SortBy=id&SortDirection=asc`,
+		{ httpsAgent: agent },
+	)
+	const fetchedProducts = res.data.data
+
+	console.log('🚀 ~ fetchedProducts:', fetchedProducts)
+
+	const items = fetchedProducts.map((product: any) => ({
+		id: product.id,
+		name: product.tenSanPham,
+		price: product.giaTien,
+		// img1: product.anhDaiDien,
+		img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+		saleCount: product.luotBan,
+	}))
 
 	return {
 		props: {

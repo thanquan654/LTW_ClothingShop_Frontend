@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
@@ -5,6 +6,7 @@ import Image from 'next/image'
 import { Disclosure } from '@headlessui/react'
 import { useTranslations } from 'next-intl'
 import axios from 'axios'
+import https from 'https'
 
 import Heart from '../../../public/icons/Heart'
 import DownArrow from '../../../public/icons/DownArrow'
@@ -42,6 +44,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
 	const { addItem } = useCart()
 	// const { wishlist, addToWishlist, deleteWishlistItem } = useWishlist()
 	const [size, setSize] = useState('M')
+	const [color, setColor] = useState('')
 	const [mainImg, setMainImg] = useState(img1)
 	const [currentQty, setCurrentQty] = useState(1)
 	const t = useTranslations('Category')
@@ -56,9 +59,14 @@ const Product: React.FC<Props> = ({ product, products }) => {
 	const handleSize = (value: string) => {
 		setSize(value)
 	}
+	const handleColor = (value: string) => {
+		setColor(value)
+	}
 
 	const currentItem = {
 		...product,
+		size,
+		color,
 		qty: currentQty,
 	}
 
@@ -155,48 +163,52 @@ const Product: React.FC<Props> = ({ product, products }) => {
 					<div className="infoSection w-full md:w-1/2 h-auto py-8 sm:pl-4 flex flex-col">
 						<h1 className="text-3xl mb-4">{product.name}</h1>
 						<span className="text-2xl text-gray-400 mb-2">
-							$ {product.price}
+							{product.price} VNĐ
 						</span>
 						<span className="mb-2 text-justify">
 							{product.description}
 						</span>
 						<span className="mb-2">
-							{t('availability')}: {t('in_stock')}
+							{t('availability')}:{' '}
+							{product.storeCount > 0
+								? t('in_stock')
+								: t('out_of_stock')}
 						</span>
 						<span className="mb-2">
-							{t('size')}: {size}
+							{t('size')}: {size.kichCo}
+						</span>
+						<span className="mb-2">
+							{t('color')}: {color.mau}
 						</span>
 						<div className="sizeContainer flex space-x-4 text-sm mb-4">
-							<div
-								onClick={() => handleSize('S')}
-								className={`w-8 h-8 flex items-center justify-center border ${
-									size === 'S'
-										? 'border-gray-500'
-										: 'border-gray-300 text-gray400'
-								} cursor-pointer hover:bg-gray-500 hover:text-gray-100`}
-							>
-								S
-							</div>
-							<div
-								onClick={() => handleSize('M')}
-								className={`w-8 h-8 flex items-center justify-center border ${
-									size === 'M'
-										? 'border-gray-500'
-										: 'border-gray-300 text-gray-400'
-								} cursor-pointer hover:bg-gray-500 hover:text-gray-100`}
-							>
-								M
-							</div>
-							<div
-								onClick={() => handleSize('L')}
-								className={`w-8 h-8 flex items-center justify-center border ${
-									size === 'L'
-										? 'border-gray-500'
-										: 'border-gray-300 text-gray-400'
-								} cursor-pointer hover:bg-gray-500 hover:text-gray-100`}
-							>
-								L
-							</div>
+							{product.sizes.map((size) => (
+								<div
+									key={size.id}
+									onClick={() => handleSize(size)}
+									className={`w-8 h-8 flex items-center justify-center border ${
+										size === 'S'
+											? 'border-gray-500'
+											: 'border-gray-300 text-gray400'
+									} cursor-pointer hover:bg-gray-500 hover:text-gray-100`}
+								>
+									{size.kichCo}
+								</div>
+							))}
+						</div>
+						<div className="sizeContainer flex space-x-4 text-sm mb-4">
+							{product.colors.map((color) => (
+								<div
+									key={color.id}
+									onClick={() => handleColor(color)}
+									className={`px-2 h-8 flex items-center justify-center border ${
+										size === 'S'
+											? 'border-gray-500'
+											: 'border-gray-300 text-gray400'
+									} cursor-pointer hover:bg-gray-500 hover:text-gray-100`}
+								>
+									{color.mau}
+								</div>
+							))}
 						</div>
 						<div className="addToCart flex flex-col sm:flex-row md:flex-col lg:flex-row space-y-4 sm:space-y-0 mb-4">
 							<div className="plusOrMinus h-12 flex border justify-center border-gray-300 divide-x-2 divide-gray-300 mb-4 mr-0 sm:mr-4 md:mr-0 lg:mr-4">
@@ -304,125 +316,46 @@ export const getServerSideProps: GetServerSideProps = async ({
 	locale,
 }) => {
 	const paramId = params!.id as string
-	// const res = await axios.get(
-	// 	`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products/${paramId}?include=category`,
-	// )
-	// const fetchedProduct: apiProductsType = res.data.data
+	const agent = new https.Agent({ rejectUnauthorized: false })
 
-	// let product: itemType = {
-	// 	id: fetchedProduct.id,
-	// 	name: fetchedProduct.name,
-	// 	price: fetchedProduct.price,
-	// 	detail: fetchedProduct.detail,
-	// 	img1: fetchedProduct.image1,
-	// 	img2: fetchedProduct.image2,
-	// 	categoryName: fetchedProduct!.category!.name,
-	// }
+	const prouctRes = await axios.get(
+		`https://localhost:7275/api/Product/${paramId}`,
+		{ httpsAgent: agent },
+	)
+	const fetchedProduct1 = prouctRes.data.data
 
-	// // Might be temporary solution for suggested products
-	// const randomProductRes = await axios.get(
-	// 	`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?category=${product.categoryName}`,
-	// )
-	// const fetchedProducts: apiProductsType[] = randomProductRes.data.data
+	console.log('🚀 ~ fetchedProduct:', fetchedProduct1)
 
-	// // Shuffle array
-	// const shuffled = fetchedProducts.sort(() => 0.5 - Math.random())
-
-	// // Get sub-array of first 5 elements after shuffled
-	// let randomFetchedProducts = shuffled.slice(0, 5)
-
-	// let products: itemType[] = []
-	// randomFetchedProducts.forEach((randomProduct: apiProductsType) => {
-	// 	products.push({
-	// 		id: randomProduct.id,
-	// 		name: randomProduct.name,
-	// 		price: randomProduct.price,
-	// 		img1: randomProduct.image1,
-	// 		img2: randomProduct.image2,
-	// 	})
-	// })
-
-	// FIXME: Call API to get products
-
-	const product: itemType = {
-		id: 100,
-		name: 'Tempsoft',
-		price: '33.56',
-		img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/125_zp8lpt.webp',
-		img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/126_oyivlh.webp',
+	const product = {
+		id: fetchedProduct1.id,
+		name: fetchedProduct1.tenSanPham,
+		price: fetchedProduct1.giaTien,
+		detail: fetchedProduct1.moTaSanPham,
+		img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+		img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+		categoryName: fetchedProduct1.tenDanhMuc,
+		sizes: fetchedProduct1.kichCo,
+		colors: fetchedProduct1.mauSac,
+		storeCount: fetchedProduct1.soLuongTon,
+		saleCount: fetchedProduct1.luotBan,
 	}
-	const products: itemType[] = [
-		{
-			id: 100,
-			name: 'Tempsoft',
-			price: '33.56',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/125_zp8lpt.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646031201/haru/126_oyivlh.webp',
-		},
-		{
-			id: 99,
-			name: 'Overhold',
-			price: '123.91',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028883/haru/83_or2yx2.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028883/haru/84_xhul9w.webp',
-		},
-		{
-			id: 98,
-			name: 'Ronstring',
-			price: '134.08',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646024958/haru/11_x5vopz.jpg',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646024957/haru/12_fyz5hq.jpg',
-		},
-		{
-			id: 97,
-			name: 'Solarbreeze',
-			price: '124.16',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646039361/haru/151_gsi9dp.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646039361/haru/152_l7p79y.webp',
-		},
-		{
-			id: 96,
-			name: 'Voltsillam',
-			price: '123.99',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646039402/haru/153_szqtx3.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646039402/haru/154_gxsayj.webp',
-		},
-		{
-			id: 95,
-			name: 'Stringtough',
-			price: '141.38',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028602/haru/77_wz1few.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028602/haru/78_e1x1ae.webp',
-		},
-		{
-			id: 94,
-			name: 'Greenlam',
-			price: '61.94',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646026083/haru/35_q9xywd.jpg',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646026083/haru/36_agho06.jpg',
-		},
-		{
-			id: 93,
-			name: 'Namfix',
-			price: '150.91',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028517/haru/73_h5kdt8.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028517/haru/74_jtxobp.webp',
-		},
-		{
-			id: 92,
-			name: 'Domainer',
-			price: '178.12',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646038633/haru/133_iosxvx.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646038633/haru/134_psybg7.webp',
-		},
-		{
-			id: 91,
-			name: 'Cardguard',
-			price: '163.24',
-			img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
-			img2: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/66_tmhgnk.webp',
-		},
-	]
+
+	const productsRes = await axios.get(
+		`https://localhost:7275/api/Product?Page=1&PageSize=10&SortBy=id&SortDirection=asc`,
+		{ httpsAgent: agent },
+	)
+	const fetchedProducts = productsRes.data.data
+
+	console.log('🚀 ~ fetchedProducts:', fetchedProducts)
+
+	const products = fetchedProducts.map((product: any) => ({
+		id: product.id,
+		name: product.tenSanPham,
+		price: product.giaTien,
+		// img1: product.anhDaiDien,
+		img1: 'https://res.cloudinary.com/noezectz/image/upload/v1646028339/haru/65_ehs8cr.webp',
+		saleCount: product.luotBan,
+	}))
 
 	// Pass data to the page via props
 	return {

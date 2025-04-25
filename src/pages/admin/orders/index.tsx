@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { UserNav } from '@/components/user-nav'
@@ -27,6 +27,14 @@ export default function OrdersPage() {
 	const [userRole, setUserRole] = useState<UserRole>('admin')
 	const [selectedOrders, setSelectedOrders] = useState<string[]>([])
 	const [filtersVisible, setFiltersVisible] = useState(true)
+	const [orders, setOrders] = useState([])
+
+	useEffect(() => {
+		// Gọi API thực tế ở đây
+		fetch('https://localhost:7275/api/Order')
+			.then((res) => res.json())
+			.then((data) => setOrders(data))
+	}, [])
 
 	const toggleRole = () => {
 		setUserRole(userRole === 'admin' ? 'staff' : 'admin')
@@ -154,10 +162,7 @@ export default function OrdersPage() {
 											/>
 										)}
 									</div>
-									<OrdersTable
-										selectedOrders={selectedOrders}
-										setSelectedOrders={setSelectedOrders}
-									/>
+									<OrdersTable orders={orders} />
 								</div>
 							</div>
 						</div>

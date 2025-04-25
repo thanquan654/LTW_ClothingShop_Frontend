@@ -21,7 +21,7 @@ const Card: FC<Props> = ({ item }) => {
 
 	return (
 		<div className="w-full">
-			<div className="relative overflow-hidden mb-1 group">
+			<div className="relative overflow-hidden mb-1 group w-56 h-72">
 				<Link
 					href={itemLink}
 					tabIndex={-1}
@@ -29,22 +29,20 @@ const Card: FC<Props> = ({ item }) => {
 					onMouseLeave={() => setIsHovered(false)}
 				>
 					{!isHovered && (
-						<Image
-							src={img1 as string}
+						<img
+							src={`https://localhost:7275/uploads/${img1?.toLocaleLowerCase()}`}
 							alt={name}
 							width={230}
 							height={300}
-							layout="responsive"
 						/>
 					)}
 					{isHovered && (
-						<Image
+						<img
 							className="transition-transform transform hover:scale-110 duration-1000"
-							src={img2 as string}
+							src={`https://localhost:7275/uploads/${img1?.toLocaleLowerCase()}`}
 							alt={name}
 							width={230}
 							height={300}
-							layout="responsive"
 						/>
 					)}
 				</Link>
@@ -64,7 +62,7 @@ const Card: FC<Props> = ({ item }) => {
 				>
 					{name}
 				</Link>
-				<div className="text-gray-400">$ {price}</div>
+				<div className="text-gray-400">{price} VNĐ</div>
 				<button
 					type="button"
 					onClick={() => addOne!(item)}
